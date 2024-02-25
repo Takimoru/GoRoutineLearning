@@ -28,7 +28,7 @@ func GiveMeResponse(channel chan string) {
 }
 
 func TestChannelAsParameter(t *testing.T) {
-	channel := make(chan string)
+	channel := make(chan string, 5)
 	defer close(channel)
 
 	go GiveMeResponse(channel)
@@ -37,4 +37,29 @@ func TestChannelAsParameter(t *testing.T) {
 	fmt.Println(data)
 
 	time.Sleep(5 * time.Second)
+}
+
+func TestBuffCh(t *testing.T) {
+	cenel := make(chan string)
+	defer close(cenel)
+
+	//ini kalo pake go routine + anonymous func
+	go func() {
+		cenel <- "Suidini"
+		cenel <- "Pekodini"
+		cenel <- "Wanwandini"
+		cenel <- "Namidini"
+		cenel <- "Suichan waaaa"
+	}()
+
+	go func() {
+		fmt.Println(<-cenel)
+		fmt.Println(<-cenel)
+		fmt.Println(<-cenel)
+		fmt.Println(<-cenel)
+		fmt.Println(<-cenel)
+	}()
+
+	time.Sleep(2 * time.Second)
+	fmt.Println("Waifu gwe")
 }
